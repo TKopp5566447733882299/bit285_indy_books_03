@@ -35,22 +35,27 @@ namespace IndyBooks.Controllers
         {
 
             //TODO: Build a new CreateBookViewModel with a complete set of Writers from the database
-            
-
-            return View(); //TODO: pass the ViewModel onto the CreateBook View
+            var createVeiwModel = new CreateBookViewModel { Writers = _db.Writers };
+            return View("CreateBook", createVeiwModel); //TODO: pass the ViewModel onto the CreateBook View
         }
         [HttpPost]
         public IActionResult CreateBook(CreateBookViewModel bookVM)
         {
             //TODO: Build the Writer object using the parameter
-           
-            
+            //Book book = new Book() {
+            //    Name = bookVM.Name,
+            //    BookId = bookVM.BookId,
+            //    Title = bookVM.Title,
+            //    SKU = bookVM.SKU,
+            //    Price = bookVM.Price,
+            //    AuthorId = bookVM.Name,
+            //}
 
             //TODO: Build the Book using the parameter data and your newly created author.
 
 
             //TODO: Add author and book to their DbSets; SaveChanges
-           
+
 
             //TODO: Show the book by passing the Book's id (rather than 1) to the Index Action 
             return RedirectToAction("Index", new { id = 1 });
