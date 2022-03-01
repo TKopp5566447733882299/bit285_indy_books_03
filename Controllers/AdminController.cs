@@ -21,11 +21,11 @@ namespace IndyBooks.Controllers
         public IActionResult Index(long id)
         {
             IQueryable<Book> books = _db.Books.Include(b=>b.Author);
-            //TODO: filter books by the id (if passed an id as its Route Parameter),
-            //     otherwise use the entire collection of Books, ordered by SKU.
-            
+            if (id == 0) {
+                return View("SearchResults", books);
+            }
 
-            return View("SearchResults", books);
+            return View("SearchResults", books.Where(b => b.Id == id));
         }
         /***
          * CREATE
@@ -33,6 +33,7 @@ namespace IndyBooks.Controllers
         [HttpGet]
         public IActionResult CreateBook()
         {
+
             //TODO: Build a new CreateBookViewModel with a complete set of Writers from the database
             
 
