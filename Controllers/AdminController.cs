@@ -35,38 +35,53 @@ namespace IndyBooks.Controllers
         {
 
             //TODO: Build a new CreateBookViewModel with a complete set of Writers from the database
-            var createVeiwModel = new CreateBookViewModel { Writers = _db.Writers };
-            return View("CreateBook", createVeiwModel); //TODO: pass the ViewModel onto the CreateBook View
+            var createViewModel = new CreateBookViewModel { Writers = _db.Writers };
+            return View("CreateBook", createViewModel); //TODO: pass the ViewModel onto the CreateBook View
         }
         [HttpPost]
         public IActionResult CreateBook(CreateBookViewModel bookVM)
         {
             //TODO: Build the Writer object using the parameter
-            //Book book = new Book() {
-            //    Name = bookVM.Name,
-            //    BookId = bookVM.BookId,
-            //    Title = bookVM.Title,
-            //    SKU = bookVM.SKU,
-            //    Price = bookVM.Price,
-            //    AuthorId = bookVM.Name,
-            //}
-
+            Writer writer;
+            if (bookVM.AuthorId > 0)
+            {
+                writer = _db.Writers.Where(w => w.Id.Equals(bookVM.AuthorId)).FirstOrDefault();
+            }
+            else
+            {
+                writer = new Writer();
+                writer.Name = bookVM.Name;
+                
+            }
             //TODO: Build the Book using the parameter data and your newly created author.
-
+            Book book = new Book()
+            {
+                Name = bookVM.Name,
+                BookId = bookVM.BookId,
+                Title = bookVM.Title,
+                SKU = bookVM.SKU,
+                Price = bookVM.Price,
+                AuthorId = bookVM.AuthorId,
+            };
 
             //TODO: Add author and book to their DbSets; SaveChanges
-
-
+            _db.Writers.Add(writer);
+            _db.Books.Add(book);
+            _db.SaveChanges();
             //TODO: Show the book by passing the Book's id (rather than 1) to the Index Action 
-            return RedirectToAction("Index", new { id = 1 });
+            return RedirectToAction("Index", new { id = bookVM.BookId });
         }
         /***
          * UPDATE (reusing the CreateBook View ) 
          */
          //TODO: Write a method to take a book id, and load book and author info
          //      into the ViewModel for the CreateBook View
-         [HttpGet]
-
+         [HttpPut]
+         public IActionResult UpdateBook(long BookId, Book book)
+        {
+            book = _db.Books.Where(w => w.BookId == BookId).FirstOrDefault();
+            return View(book);
+        }
         /***
          * DELETE
          */
@@ -74,7 +89,15 @@ namespace IndyBooks.Controllers
         public IActionResult DeleteBook(long id)
         {
             //TODO: Remove the Book associated with the given id number; Save Changes
-
+            if (id > 0)
+            {
+                var book = _db.Books.Where(w => w.BookId == id).FirstOrDefault();
+                if (book != null)
+                {
+                    _db.Books.Remove(book);
+                    _db.SaveChanges();
+                }
+            }
 
             return RedirectToAction("Index");
         }
