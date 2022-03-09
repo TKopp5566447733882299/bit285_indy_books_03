@@ -89,7 +89,15 @@ namespace IndyBooks.Controllers
         public IActionResult DeleteBook(long id)
         {
             //TODO: Remove the Book associated with the given id number; Save Changes
-
+            if (id > 0)
+            {
+                var book = _db.Books.Where(w => w.BookId == id).FirstOrDefault();
+                if (book != null)
+                {
+                    _db.Books.Remove(book);
+                    _db.SaveChanges();
+                }
+            }
 
             return RedirectToAction("Index");
         }
